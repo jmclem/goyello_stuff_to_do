@@ -15,6 +15,10 @@ class StuffToDoController < ApplicationController
   helper :timelog
   helper :sort
 
+  def protect_against_forgery?
+    false
+  end
+
   def self.visible_projects
     Project.find(:all, :conditions => Project.allowed_to_condition(User.current, :view_stuff_to_do))
   end
@@ -79,7 +83,11 @@ class StuffToDoController < ApplicationController
     fetch_issues(sort_clause)
 
     @i = 0;
-    @users = User.all(:conditions => ["`members`.`project_id` IN (?)", User.current.projects.map(&:id)],
+    projects_ids = User.current.projects.select{|project|
+      User.current.allowed_to?(:other_stuff_to_do_access, project)
+    }.collect(&:id).uniq
+#    projects_ids = 
+    @users = User.all(:conditions => ["`members`.`project_id` IN (?)", projects_ids],
       :joins => "left join `members` on `members`.`user_id` = `users`.`id`").uniq
     @filters = filters_for_view
 
@@ -156,7 +164,7 @@ class StuffToDoController < ApplicationController
       logtime_entry.destroy if(!logtime_entry.nil?)
 
       @@remote = true;
-      redirect_to :action => 'index'
+      redirect_to :controller => 'stuff_to_do',:action => 'index'
     else
       render :nothing => true;
     end
@@ -217,6 +225,7 @@ class StuffToDoController < ApplicationController
         @time_entry.attributes = params[:time_entry]
 #        @time_entry.activity = Enumeration.find(params[:time_entry][:activity_id].to_i)
         @time_entry.save;
+        @issue.status = IssueStatus.find(params[:issue][:status_id].to_i);
         @issue.assigned_to = User.find(params[:issue][:assigned_to_id].to_i);
         @issue.done_ratio = params[:issue][:done_ratio].to_i;
         
@@ -228,7 +237,7 @@ class StuffToDoController < ApplicationController
         else
           @logtime_entry = LogtimeEntry.find_by_issue_id_and_user_id(params[:issue][:id], User.current.id);
           @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
-          @activities = Enumeration.find_all_by_opt('ACTI');
+          @activities = get_activity
 
           if(request.env['HTTP_REFERER'].match(/end_of_work/))
             render :partial => 'quicklog_form' and return
@@ -245,7 +254,7 @@ class StuffToDoController < ApplicationController
   end
 
   #
-  #
+  # Retrieve issue data, and render partial for quicklog form
   #
   def retrieve_issue_for_quicklog
     if(!params[:issue_id].nil?)
@@ -259,7 +268,7 @@ class StuffToDoController < ApplicationController
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     @time_entry = TimeEntry.new(:hours => @logtime_entry.recorded_time,
       :spent_on => Date.parse(@logtime_entry.start_date.to_s))
-    @activities = Enumeration.find_all_by_opt('ACTI');
+    @activities = get_activity;
 
     if(@issue_id.nil?)
       render :partial => 'save_single_entry'
@@ -282,7 +291,7 @@ class StuffToDoController < ApplicationController
   #
   #
   #
-  def issuePlay
+  def issue_play
     user_id = User.current.id;
     issue_id = params[:issue_id];
 
@@ -357,7 +366,6 @@ class StuffToDoController < ApplicationController
       issue.update_attributes(:done_ratio => params[:done_ratio][key],
         :assigned_to_id => params[:assigned_to_id][key]
       );
-
       if(params.include?(:status_id))
         issue.update_attribute(:status_id, params[:status_id][key]);
       end
@@ -377,7 +385,9 @@ class StuffToDoController < ApplicationController
     @recommended = NextIssue.recommended(@user)
     @available = NextIssue.available(@user, sort_clause, :user => @user)
     if(StuffToDoController.plugin_exists?('redmine_goyello_schedules'))
-      @scheduled_issues = NextIssue.scheduled_issues(sort_clause);
+      @selected_user_id = params[:user_id]
+      @selected_user_id ||= @user.id
+      @scheduled_issues = NextIssue.scheduled_issues(sort_clause, @selected_user_id);
       @scheduled_issues -= issues_for(@doing_now)
       @available -= @scheduled_issues;
     end
@@ -425,6 +435,15 @@ class StuffToDoController < ApplicationController
       @user = User.current
     end
   end
+
+  def get_activity
+    if TimeEntryActivity.respond_to?(:all)
+      return TimeEntryActivity.all
+    else
+      return Enumeration.find_all_by_opt('ACTI')
+    end
+  end
+
 
   def clear_cache
     response.headers['Expires'] = "-1";

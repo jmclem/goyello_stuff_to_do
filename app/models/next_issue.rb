@@ -30,10 +30,10 @@ class NextIssue < ActiveRecord::Base
   #
   #
   #
-  def self.scheduled_issues(order)
+  def self.scheduled_issues(order, user_id)
     return Issue.all(
       :conditions => ["scheduled_issues.date = ? 
-          AND scheduled_issues.user_id = ?", Date.today, User.current.id],
+          AND scheduled_issues.user_id = ?", Date.today, user_id],
       :joins => "LEFT JOIN scheduled_issues on scheduled_issues.issue_id = issues.id",
       :include => [:status, :priority, :project, :tracker],
       :order => order)
@@ -88,7 +88,7 @@ class NextIssue < ActiveRecord::Base
     # Deliver an email for each user who is below the threshold
     user_ids.uniq.each do |user_id|
       count = NextIssue.count(:conditions => { :user_id => user_id})
-      threshold = Setting.plugin_stuff_to_do_plugin['threshold']
+      threshold = Setting.plugin_redmine_goyello_stuff_to_do['threshold']
 
       if threshold && threshold.to_i >= count
         user = User.find_by_id(user_id)

@@ -9,13 +9,10 @@
 
 </div>
 <script type="text/javascript">
-  if($('logtimediv') != null)
+  if($('logtimediv') != null && user_id == <%= User.current.id %>)
   {
-    if(user_id == <%= User.current.id %>)
-    {
-      new Draggable('logtimediv');
-      attachSortables();
-      updateStopwatches();
-    }
-  }
+    new Draggable('logtimediv');
+    attachSortables();
+    updateStopwatches();
+  } 
 </script>

@@ -1,10 +1,10 @@
 class NextIssueMailer < Mailer
   def recommended_below_threshold(user, number_of_next_items)
-    recipients Setting.plugin_stuff_to_do_plugin['email_to'].split(',')
+    recipients Setting.plugin_redmine_goyello_stuff_to_do['email_to'].split(',')
     subject "What's Recommended is below the threshold"
     
     body(
-         :threshold => Setting.plugin_stuff_to_do_plugin['threshold'],
+         :threshold => Setting.plugin_redmine_goyello_stuff_to_do['threshold'],
          :count => number_of_next_items,
          :user => user
          )

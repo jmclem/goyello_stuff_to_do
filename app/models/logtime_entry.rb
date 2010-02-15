@@ -64,7 +64,11 @@ class LogtimeEntry < ActiveRecord::Base
   #
   # # # #
   def LogtimeEntry.Activities
-    return Enumeration.find_all_by_opt("ACTI");
+   if TimeEntryActivity.respond_to?(:all)
+      return TimeEntryActivity.all
+    else
+      return Enumeration.find_all_by_opt('ACTI')
+    end
   end
 
   #

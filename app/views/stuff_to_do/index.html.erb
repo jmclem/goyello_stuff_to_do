@@ -18,14 +18,14 @@
        style="display: none"
      <% end %>
      >
-  <a href="#" title="Mass log time" onclick="endOfWork()">
-    <%= image_tag 'End_of_work.png', :plugin => 'stuff_to_do_plugin',
-      :size => '40x40', :title => "Mass log time" %>
+  <a href="#" title="<%= l(:stuff_to_do_mass_log_time) %>" onclick="endOfWork()">
+    <%= image_tag 'end_of_work.png', :plugin => 'redmine_goyello_stuff_to_do',
+      :size => '40x40', :title => l(:stuff_to_do_mass_log_time) %>
   </a>
   <a href="#"  id="loggingBreakButton" style="display: none"
-     title="Pause time recording" onclick="stopLoggingTime()">
-       <%= image_tag 'break.png', :plugin => 'stuff_to_do_plugin',
-         :size => '40x40', :title => "Pause time recording" %>
+     title="<%= l(:stuff_to_do_pause_time_recording) %>" onclick="stopLoggingTime()">
+       <%= image_tag 'break.png', :plugin => 'redmine_goyello_stuff_to_do',
+         :size => '40x40', :title => l(:stuff_to_do_pause_time_recording) %>
   </a>
 </div>
 <div style="clear:right;"></div>
@@ -35,24 +35,25 @@
 <div style="clear:both;"></div>
 <div id="logtimediv" style="display: none;">
 </div>
+
 <% content_for :header_tags do %>
-  <%= stylesheet_link_tag "stuff_to_do.css", :plugin => "stuff_to_do_plugin", :media => 'all' %>
-  <%= stylesheet_link_tag "jquery.tooltip.css", :plugin => "stuff_to_do_plugin", :media => 'all' %>
-  <%= javascript_include_tag 'jquery-1.2.6.min.js', :plugin => 'stuff_to_do_plugin' %>
-  <%= javascript_include_tag 'ui/ui.core.js', :plugin => 'stuff_to_do_plugin' %>
-  <%= javascript_include_tag 'ui/ui.sortable.js', :plugin => 'stuff_to_do_plugin' %>
+  <%= stylesheet_link_tag "stuff_to_do.css", :plugin => "redmine_goyello_stuff_to_do", :media => 'all' %>
+  <%#= stylesheet_link_tag "jquery.tooltip.css", :plugin => "redmine_goyello_stuff_to_do", :media => 'all' %>
+  <%= javascript_include_tag 'jquery-1.2.6.min.js', :plugin => 'redmine_goyello_stuff_to_do' %>
+  <%= javascript_include_tag 'ui/ui.core.js', :plugin => 'redmine_goyello_stuff_to_do' %>
+  <%= javascript_include_tag 'ui/ui.sortable.js', :plugin => 'redmine_goyello_stuff_to_do' %>
   <%= javascript_tag("jQuery.noConflict();") %>
   <% if(@user == User.current) %>
-    <%= javascript_include_tag 'stuff-to-do.js', :plugin => 'stuff_to_do_plugin' %>
+    <%= javascript_include_tag 'stuff-to-do.js', :plugin => 'redmine_goyello_stuff_to_do' %>
     <%= javascript_tag("var editable = true;") %>
   <% else %>
     <%= javascript_tag 'var editable = false;' %>
   <% end %>
-  <%= javascript_include_tag 'gyModalbox.js', :plugin => 'stuff_to_do_plugin' %>
-  <%= javascript_include_tag 'stopwatch.js', :plugin => 'stuff_to_do_plugin' %>
-  <%= javascript_include_tag 'gyStuffToDo.js', :plugin => 'stuff_to_do_plugin' %>
-  <%= javascript_include_tag 'jquery.tooltip.js', :plugin => 'stuff_to_do_plugin' %>
+  <%= javascript_include_tag 'gyModalbox.js', :plugin => 'redmine_goyello_stuff_to_do' %>
+  <%= javascript_include_tag 'stopwatch.js', :plugin => 'redmine_goyello_stuff_to_do' %>
+  <%= javascript_include_tag 'gyStuffToDo.js', :plugin => 'redmine_goyello_stuff_to_do' %>
 <% end %>
+
 <script type="text/javascript">
   var user_id = getUrlVars();
   var current_user_id = <%= User.current.id %>;

@@ -16,7 +16,7 @@ jQuery(document).ready(function(){
     if (jQuery('#filter').val() != '') {
       jQuery.ajax({
         type: "GET",
-        url: 'stuff_to_do/available_issues.js',
+        url: location.pathname +'/available_issues.js',
         data: jQuery('#filter').serialize(),
         success: function(response) {
           jQuery('#available-pane').html(response);
@@ -32,18 +32,6 @@ jQuery(document).ready(function(){
 });
 
 function attachSortables() {
-  //  jQuery("#available").sortable({
-  //    connectWith: ["#doing-now", "#recommended"],
-  //    placeholder: 'drop-accepted',
-  //    dropOnEmpty: true,
-  //    update : function (event, ui) {
-  //      if (jQuery('#available li.issue').length > 0) {
-  //        jQuery("#available li.empty-list").hide();
-  //      } else {
-  //        jQuery("#available li.empty-list").show();
-  //      }
-  //    }
-  //  });
 
   jQuery("#doing-now").sortable({
     //    connectWith: ["#available", "#recommended"],
@@ -54,14 +42,6 @@ function attachSortables() {
     }
   });
 
-//  jQuery("#recommended").sortable({
-//    connectWith: ["#available", "#doing-now"],
-//    dropOnEmpty: true,
-//    placeholder: 'drop-accepted',
-//    update : function (event, ui) {
-//    //saveOrder(ui);
-//    }
-//  });
 }
 
 function saveOrder() {
@@ -72,7 +52,7 @@ function saveOrder() {
   
   jQuery.ajax({
     type: "POST",
-    url: 'stuff_to_do/reorder.js',
+    url: location.pathname +'/reorder.js',
     data: data,
     async: false,
     success: function(response) {

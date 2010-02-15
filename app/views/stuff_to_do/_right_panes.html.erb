@@ -7,21 +7,30 @@
         <thead>
           <tr>
             <th></th>
-            <%= sort_header_tag('id', :title => 'Sort by contact ID', :caption => '#') %>
-            <%= sort_header_tag('project') %>
-            <%= sort_header_tag('tracker') %>
-            <%= sort_header_tag('estimated') %>
-            <%= sort_header_tag('subject') %>
+            <%= sort_header_tag('id', :title => l(:stuff_to_do_sort_id),
+              :caption => '#') %>
+            <%= sort_header_tag('project', :title => l(:field_project),
+              :caption => l(:field_project)) %>
+            <%= sort_header_tag('tracker', :title => l(:field_tracker),
+              :caption => l(:field_tracker)) %>
+            <%= sort_header_tag('estimated', :title => l(:field_estimated_hours),
+              :caption => l(:field_estimated_hours)) %>
+            <%= sort_header_tag('subject', :title => l(:field_subject),
+              :caption => l(:field_subject)) %>
           </tr>
         </thead>
+
         <% if(StuffToDoController.plugin_exists?('redmine_goyello_schedules')) %>
           <% if(@scheduled_issues.length > 0) %>
-            <tr><td colspan="6" style="font-style:italic; font-weight:bold;"><%= l(:stuff_to_do_what_is_recommended) %></td></tr>
+            <tr><td colspan="6" style="font-style:italic; font-weight:bold;">
+              <%= l(:stuff_to_do_what_is_recommended) %></td></tr>
             <%= render :partial => 'available_issue', :collection => @scheduled_issues %>
             <tr><td>&nbsp;</td></tr>
           <% end %>
-          <tr><td colspan="6" style="font-style:italic; font-weight:bold;"><%= l(:stuff_to_do_text_by_project_manager) %></td></tr>
-        <% end %>
+          <tr><td colspan="6" style="font-style:italic; font-weight:bold;">
+            <%= l(:stuff_to_do_text_by_project_manager) %></td></tr>
+          <% end %>
+
         <%= render :partial => 'available_issue', :collection => @available %>
       </table>
     <% else %>

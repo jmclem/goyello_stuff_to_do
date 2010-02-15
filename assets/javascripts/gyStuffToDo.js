@@ -36,9 +36,13 @@ var Request = {
     }
     else
     {
-      stopWatches[issueID].start();
+      if(runningIssueID == issueID)
+      {
+        stopWatches[issueID].start();
+      }
     }
   },
+  
   updateLogtimeEntry: function(issueID, fromLogIT)
   {
     if(null == issueID)
@@ -65,7 +69,7 @@ var Request = {
   {
     if(null != runningIssueID)
     {
-      new Ajax.Request('stuff_to_do/issuePlay', {
+      new Ajax.Request('stuff_to_do/issue_play', {
         asynchronous: false,
         method: 'post',
         parameters:"issue_id=" + runningIssueID
@@ -85,6 +89,7 @@ var Request = {
       parameters:"issue_id=" + issueID
     })
   },
+
   moveToAvailable: function(issueID)
   {
     var startTime = stopwatchToArray(issueID);
@@ -121,24 +126,9 @@ var Request = {
     }
   },
 
-  updateIssueSummary: function(issueID)
-  {
-    new Ajax.Updater('issue-summary_' + issueID, 'stuff_to_do/update_issue_summary',{
-      method: 'post',
-      asynchronous: true,
-      parameters:"issue_id=" + issueID
-    });
-  },
-  updatePaneSummary: function()
-  {
-    new Ajax.Updater('pane-summary', 'stuff_to_do/update_pane_summary', {
-      method: 'post',
-      asynchronous: true
-    });
-  },
   saveRecordedTime: function(form, action){
-    if(true == validate_fields())
-    {
+//    if(true == validate_fields())
+//    {
       var issueID = $('issue_id').value;
   
       new Ajax.Request('/stuff_to_do/save_single_logtime_entry', {
@@ -181,7 +171,7 @@ var Request = {
           }
         }
       });
-    }
+//    }
   }
 }
 
@@ -232,14 +222,6 @@ function hide_element(element_id)
   }
 }
 
-function submitEndOfWork()
-{
-  if (validate_fields())
-  {
-    $('endOfWorkForm').submit();
-  }
-}
-
 function moveToAvailable(issueID)
 {
   var available = $('available');
@@ -261,104 +243,6 @@ function moveToAvailable(issueID)
 function moveToDoing(issueID)
 {
   Request.moveToDoing(issueID);
-//  saveOrder();
-}
-
-function validate_fields()
-{
-  var spent_time_fields = $$('.text_field');
-  var activity_fields = $$('.select_field');
-  var date_fields = $$('.date_field');
-  var idRegexp = /id="([^"]+)"/;
-  var validation_passed = true;
-
-  date_fields.each(function(field){
-    var id = $(field).innerHTML.match(idRegexp);
-    if(null == id)
-    {
-      id = $(field).innerHTML.match(/id=([^\s]+)/gi);
-      id = id.toString().replace(/^id=(.+)$/, "$1")
-    }
-    else
-    {
-      id = id[1]
-    }
-
-    field = $(id);
-    var number = field.id.replace(/^.+_([0-9]+)_.+$/, "$1");
-    
-    if(!field.value.match(/^[0-9]*(\.?|,?)[0-9]?[0-9]$/gi))
-    {
-      $('spent_time_' + number + '_validation_failed').show();
-      validation_passed = false;
-    }
-    else
-    {
-      $('spent_time_' + number + '_validation_failed').hide();
-    }
-
-  })
-
-  spent_time_fields.each(function(field){
-    var id = $(field).innerHTML.match(idRegexp);
-
-    if(null == id)
-    {
-      id = $(field).innerHTML.match(/id=([^\s]+)/gi);
-      id = id.toString().replace(/^id=(.+)$/, "$1")
-    }
-    else
-    {
-      id = id[1]
-    //debugger;
-    }
-
-    field = $(id);
-    var number = field.id.replace(/^.+_([0-9]+)_.+$/, "$1")
-    //alert(number)
-    if(!field.value.match(/^[0-9]*(\.?|,?)[0-9]?[0-9]$/gi))
-    {
-      $('spent_time_' + number + '_validation_failed').show();
-      validation_passed = false;
-    }
-    else
-    {
-      $('spent_time_' + number + '_validation_failed').hide();
-    }
-  });
-
-  activity_fields.each(function(field){
-    var id = $(field).innerHTML.match(idRegexp);
-    if(null == id)
-    {
-      id = $(field).innerHTML.match(/id=([^\s]+)/gi);
-      id = id.toString().replace(/^id=(.+)$/, "$1")
-    }
-    else
-    {
-      id = id[1]
-    }
-    
-    field = $(id);
-    id = field.id.replace(/^logtime_entry_([0-9]+)_activity$/gi, "$1")
-   
-    if(field.value == '-1' || field.selectedIndex == 0)
-    {
-      $('activity_' + id + '_validation_failed').show();
-      validation_passed = false;
-    }
-    else
-    {
-      $('activity_' + id + '_validation_failed').hide();
-    }
-  })
-
-  if(gyModalbox.element != null)
-  {
-    gyModalbox.updateHeight();
-  }
-  
-  return validation_passed;
 }
 
 function cancelSaving()
@@ -603,19 +487,6 @@ function endOfWork()
   }
 }
 
-/*
- *
- */
-function assignToMe(issueID)
-{
-  var issueDiv = $('unassigned_issue_' + issueID);
-  var available = $('available');
-
-  available.appendChild(issueDiv);
-  $('moveToAvailable_' + issueID).hide();
-  $('moveToDoing_' + issueID).show();
-}
-
 /**
  *
  */
@@ -671,19 +542,9 @@ function issueLogTime(issueID)
  */
 function saveTimeAndStop(form)
 {
-  //Request.saveRecordedTime(form);
-
-  if(validate_fields())
-  {
-    stopLoggingTime(pausedIssueID);
-    Request.saveRecordedTime(form);
-    pausedIssueID = null;
-  }
-}
-
-// X-Browser isArray(), including Safari
-function isArray(obj) {
-  return obj.constructor == Array;
+  stopLoggingTime(pausedIssueID);
+  Request.saveRecordedTime(form);
+  pausedIssueID = null;
 }
 
 /**
@@ -851,44 +712,6 @@ function getUrlVars()
   return vars;
 }
 
-Event.observe(window, 'load', function(e){
-  //  if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
-  //  {
-  //
-  //  }
-  //
-  //pausecomp(1000)
-  //  if(!location.href.match(/end_of_work/gi))
-  //  {
-  //    new Ajax.Updater('content', window.location.href, {
-  //      method: 'get',
-  //      asynchronous: false,
-  //      onComplete:function()
-  //      {
-  //        attachSortables();
-  //        updateStopwatches();
-  //        updateElements();
-  //      }
-  //    });
-  //  }
-  //
-  });
-
-function textareaLimit(event, el, limit)
-{
-  if(null == limit)
-  {
-    limit = 5;
-  }
-
-  el = $(el);
-
-  if(el.value.length == limit)
-  {
-    event.stop();
-  }
-}
-
 /**
    *
    *  Javascript trim, ltrim, rtrim
@@ -908,27 +731,4 @@ function ltrim(str, chars) {
 function rtrim(str, chars) {
   chars = chars || "\\s";
   return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
-}
-
-function imposeMaxLength(Object, MaxLen)
-{
-  return (Object.value.length <= MaxLen);
-}
-
-function isSpecialKey(keyCode)
-{
-  return keyCode == Event.KEY_BACKSPACE
-  || keyCode == Event.KEY_TAB
-  || keyCode == Event.KEY_RETURN
-  || keyCode == Event.KEY_ESC
-  || keyCode == Event.KEY_LEFT
-  || keyCode == Event.KEY_UP
-  || keyCode == Event.KEY_RIGHT
-  || keyCode == Event.KEY_DOWN
-  || keyCode == Event.KEY_DELETE
-  || keyCode == Event.KEY_HOME
-  || keyCode == Event.KEY_END
-  || keyCode == Event.KEY_PAGEUP
-  || keyCode == Event.KEY_PAGEDOWN
-  || keyCode == Event.KEY_INSERT;
 }

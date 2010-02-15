@@ -3,10 +3,11 @@
     id="issue_<%= available_issue.id %>">
   <td>
     <% if(@user == User.current) %>
-      <a href="#"  class="editable" title="Move to Doing now" onclick="Request.moveToDoing(<%= available_issue.id %>)"
+      <a href="#"  class="editable" title="<%= l(:stuff_to_do_move_to_doing_now) %>"
+         onclick="Request.moveToDoing(<%= available_issue.id %>)"
          id="moveToDoing_<%= available_issue.id.to_s %>">
-           <%= image_tag 'green_arrow.png', :plugin => 'stuff_to_do_plugin',
-             :size => '20x20', :title => "Move to Doing now" %>
+           <%= image_tag 'green_arrow.png', :plugin => 'redmine_goyello_stuff_to_do',
+             :size => '20x20', :title => l(:stuff_to_do_move_to_doing_now) %>
       </a>
     <% end %>
   </td>

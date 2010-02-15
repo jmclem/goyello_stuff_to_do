@@ -7,28 +7,31 @@
     >
 
   <% if(@user == User.current) %>
-    <a href="#" id="<%= "start_#{doing_issue.id}" %>" title="Start timer"
+    <a href="#" id="<%= "start_#{doing_issue.id}" %>" title="<%= l(:stuff_to_do_start_timer) %>"
        onclick="<%= "startLogTime('#{doing_issue.id}')" %>">
-         <%= image_tag 'Play.png', :plugin => 'stuff_to_do_plugin',
-           :size => '20x20', :title => "Start timer" %>
+         <%= image_tag 'play.png', :plugin => 'redmine_goyello_stuff_to_do',
+           :size => '20x20', :title => l(:stuff_to_do_start_timer) %>
     </a>
 
-    <a href="#"  id="<%= "logTime_#{doing_issue.id}" %>" title="Log recorded time" style="display: none"
+    <a href="#"  id="<%= "logTime_#{doing_issue.id}" %>" title="<%= l(:stuff_to_do_log_time) %>"
+       style="display: none"
        onclick=<%= "issueLogTime(#{doing_issue.id})" %> >
-         <%= image_tag 'Logtime.png', :plugin => 'stuff_to_do_plugin',
-           :size => '20x20', :title => "Log recorded time" %>
+         <%= image_tag 'logtime.png', :plugin => 'redmine_goyello_stuff_to_do',
+           :size => '20x20', :title => l(:stuff_to_do_log_time) %>
     </a>
 
-    <a href="#"  id="<%= "reset_#{doing_issue.id}" %>" title="Reset timer" style="display: none"
+    <a href="#"  id="<%= "reset_#{doing_issue.id}" %>" title="<%= l(:stuff_to_do_reset_timer) %>"
+       style="display: none"
        onclick="<%= "Request.resetRecording(#{doing_issue.id})" %>">
-         <%= image_tag 'cancel.png', :plugin => 'stuff_to_do_plugin',
-           :size => '20x20', :title => "Reset timer" %>
+         <%= image_tag 'cancel.png', :plugin => 'redmine_goyello_stuff_to_do',
+           :size => '20x20', :title => l(:stuff_to_do_reset_timer) %>
     </a>
 
-    <a href="#"  class="editable" title="Move to Available" onclick="Request.moveToAvailable(<%= doing_issue.id %>)"
+    <a href="#"  class="editable" title="<%= l(:stuff_to_do_move_to_available) %>"
+       onclick="Request.moveToAvailable(<%= doing_issue.id %>)"
        id="moveToAvailable_<%= doing_issue.id.to_s %>">
-         <%= image_tag 'red_arrow.png', :plugin => 'stuff_to_do_plugin',
-           :size => '20x20', :title => 'Move to available' %>
+         <%= image_tag 'red_arrow.png', :plugin => 'redmine_goyello_stuff_to_do',
+           :size => '20x20', :title => l(:stuff_to_do_move_to_available) %>
     </a>
   <% end %>
 
@@ -41,9 +44,11 @@
   </span>
   <br/>
 
-  <span class="id"><%= link_to('#' + doing_issue.id.to_s, :controller => 'issues', :action => 'show', :id => doing_issue) %></span>
+  <span class="id"><%= link_to('#' + doing_issue.id.to_s, :controller => 'issues',
+    :action => 'show', :id => doing_issue) %></span>
   - <span class="project"><%= h(doing_issue.project.name) %></span>
-  - <span class="subject"><%= link_to(h(doing_issue.subject), :controller => 'issues', :action => 'show', :id => doing_issue) %></span>
+  - <span class="subject"><%= link_to(h(doing_issue.subject), :controller => 'issues',
+    :action => 'show', :id => doing_issue) %></span>
   <br/>&nbsp;
   <input class="is_pending" type="hidden" id="pending_<%= doing_issue.id %>"
          <%= !logtime_entry.nil? && logtime_entry.state == 'Pending' ? "value=\"1\"" : "value=\"0\"" %>/>

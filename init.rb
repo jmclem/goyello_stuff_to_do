@@ -9,18 +9,18 @@ end
 
 require_dependency 'stuff_to_do_issue_patch.rb'
 
-Redmine::Plugin.register :stuff_to_do_plugin do
+Redmine::Plugin.register :redmine_goyello_stuff_to_do do
   name 'Stuff To Do Plugin'
   author 'GOYELLO'
   author_url 'http://www.goyello.com'
   description "The Stuff To Do plugin allows a user to order and prioritize the issues they are doing into a specific order. It will also allow to register time for those issues."
-  version '0.0.1'
+  version '0.0.2'
 
-  requires_redmine :version_or_higher => '0.8.0'
+  requires_redmine :version_or_higher => '0.9.0'
 
   project_module :stuff_to_do_module do
-    permission :view_stuff_to_do, {:stuff_to_do => [:index]}, :require => :member
-    permission :other_stuff_to_do_access, {:stuff_to_do => [:index]}, :require => :loggedin
+    permission :view_stuff_to_do, { :stuff_to_do => [:index] }, :require => :member
+    permission :other_stuff_to_do_access, { :stuff_to_do => [:index] }, :require => :loggedin
   end
 
   # Turn off settings for the plugin

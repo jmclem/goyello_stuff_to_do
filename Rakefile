@@ -20,7 +20,7 @@ require 'spec/rake/spectask'
 $:.unshift(REDMINE_ROOT + '/vendor/plugins/cucumber/lib')
 require 'cucumber/rake/task'
 
-PROJECT_NAME = 'stuff_to_do_plugin'
+PROJECT_NAME = 'redmine_goyello_stuff_to_do'
 REDMINE_PROJECT_NAME = 'redmine-stuff-to-do'
 CLEAN.include('**/semantic.cache', "**/#{PROJECT_NAME}.zip", "**/#{PROJECT_NAME}.tar.gz")
 

@@ -1,10 +1,13 @@
 <div class="box">
   <%= error_messages_for :time_entry %>
-  <span class="id"><%= link_to('#'+@issue.id.to_s, :controller => 'issues', :action => 'show', :id => @issue.id) %></span>
+  <span class="id"><%= link_to('#'+@issue.id.to_s, :controller => 'issues',
+    :action => 'show', :id => @issue.id) %></span>
   - <span class="project"><%= h(@issue.project.name) %></span>
-  - <span class="subject"><%= link_to(h(@issue.subject), :controller => 'issues', :action => 'show', :id => @issue.id) %></span>
+  - <span class="subject"><%= link_to(h(@issue.subject), :controller => 'issues',
+    :action => 'show', :id => @issue.id) %></span>
 
-  <% form_tag({ :controller => 'stuff_to_do', :action => 'save_single_logtime_entry'}, :id => "quicklog_form_#{@issue.id}") do %>
+  <% form_tag({ :controller => 'stuff_to_do', :action => 'save_single_logtime_entry'},
+    :id => "quicklog_form_#{@issue.id}") do %>
     <%= hidden_field(:issue, :id) %>
     <%= hidden_field(:logtime_entry, :id) %>
 
