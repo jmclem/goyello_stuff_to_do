@@ -288,7 +288,7 @@ function updateDoingIssuesState()
           if(null != st){
             st.update(watch.toString());
           }
-        }, 1, startTime, isPending);
+        }, 1000, startTime, isPending);
       }
 
       if(true == isPending)
@@ -641,7 +641,7 @@ function updateStopwatches()
           if(null != st){
             st.update(watch.toString());
           }
-        }, 1, startTime, isPending);
+        }, 1000, startTime, isPending);
       }
     })
   }
